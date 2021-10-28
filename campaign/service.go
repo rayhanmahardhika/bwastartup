@@ -1,7 +1,7 @@
 package campaign
 
 type Service interface {
-	FindCampaigns(userID int) ([]Campaign, error)
+	GetCampaigns(userID int) ([]Campaign, error)
 }
 
 type service struct {
@@ -13,7 +13,7 @@ func NewService(repository Repository) *service {
 }
 
 // tidak menggunakan kelas input karena tidak menggunakan request berupa JSON
-func (s *service) FindCampaigns(userID int) ([]Campaign, error) {
+func (s *service) GetCampaigns(userID int) ([]Campaign, error) {
 	if userID != 0 {
 		// find jika userID ada di param
 		campaigns, err := s.repository.FindByUserID(userID)
@@ -26,9 +26,9 @@ func (s *service) FindCampaigns(userID int) ([]Campaign, error) {
 
 	// find jika userID tidak ada di param
 	campaigns, err := s.repository.FindAll()
-		if err != nil {
-			return campaigns, err
-		}
+	if err != nil {
+		return campaigns, err
+	}
 
-		return campaigns, nil
+	return campaigns, nil
 }
