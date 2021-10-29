@@ -38,7 +38,7 @@ func (h *campaignHandler) GetCampaigns(c *gin.Context) {
 		"List of campaigns",
 		http.StatusOK,
 		"success",
-		campaigns,
+		campaign.FormatCampaigns(campaigns),
 	)
 
 	c.JSON(http.StatusOK, response)
