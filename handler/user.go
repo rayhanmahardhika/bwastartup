@@ -75,6 +75,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// menangani API Login
 func (h *userHandler) Login(c *gin.Context) {
 	// input login
 	//menangkap input ke handler
@@ -131,6 +132,7 @@ func (h *userHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// menangani email availability
 func (h *userHandler) CheckEmailAvailability(c *gin.Context) {
 	var input user.CheckEmailInput
 	err := c.ShouldBindJSON(&input)
@@ -180,6 +182,7 @@ func (h *userHandler) CheckEmailAvailability(c *gin.Context) {
 
 }
 
+// menangani API upload avatar + middleware
 func (h *userHandler) UploadAvatar(c *gin.Context) {
 	// get file dari form data
 	file, err := c.FormFile("avatar")
@@ -196,7 +199,9 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 		return
 	}
 	// buat file path + nama lalu save ke local server
-	userId := 1
+	// get contenxt + di casting ke type User
+	currentUser := c.MustGet("currentUser").(user.User)
+	userId := currentUser.ID
 	path := fmt.Sprintf("images/%d-%s", userId, file.Filename)
 	err = c.SaveUploadedFile(file, path)
 	if err != nil {
