@@ -8,13 +8,22 @@ import (
 	"bwastartup/user"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
+
+func init() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+}
 
 func main() {
 	// connect DB
@@ -55,9 +64,10 @@ func main() {
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 
 	// running router
-	router.Run()
+	router.Run(":" + os.Getenv("PORT"))
 }
 
 // fungsi middleware dibungkus agar bisa passing data

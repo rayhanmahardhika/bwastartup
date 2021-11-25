@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 )
@@ -18,9 +19,6 @@ func NewService() *jwtService {
 	return &jwtService{}
 }
 
-// ini hanya contoh, tidak boleh ditulis disini
-var SECRET_KEY = []byte("BWASTARTUP_SECRET_KEY")
-
 // generate token dari user, menyimpan ID
 func (s *jwtService) GenerateToken(userID int) (string, error) {
 	claim := jwt.MapClaims{}
@@ -28,7 +26,7 @@ func (s *jwtService) GenerateToken(userID int) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 
-	signedToken, err := token.SignedString(SECRET_KEY)
+	signedToken, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	if err != nil {
 		return signedToken, err
 	}
@@ -44,7 +42,7 @@ func (s *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
 			return nil, errors.New("Invalid Token")
 		}
 
-		return []byte(SECRET_KEY), nil
+		return []byte([]byte(os.Getenv("JWT_SECRET_KEY"))), nil
 	})
 
 	if err != nil {
